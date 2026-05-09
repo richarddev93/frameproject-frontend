@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const navItems = [
   { name: 'Início', href: '#hero' },
   { name: 'Sobre', href: '#about' },
   { name: 'Portfólio', href: '#portfolio' },
   { name: 'Serviços', href: '#services' },
+  { name: 'Blog', href: '/blog', isRoute: true },
   { name: 'Contato', href: '#contact' }
 ];
 
@@ -56,20 +58,40 @@ export const Navbar = () => {
 
             <div className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
-                <motion.button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-gray-300 hover:text-white transition-colors relative group"
-                  whileHover={{ y: -2 }}
-                >
-                  {item.name}
+                item.isRoute ? (
                   <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500"
-                    initial={{ scaleX: 0 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.button>
+                    key={item.name}
+                    whileHover={{ y: -2 }}
+                  >
+                    <Link
+                      to={item.href}
+                      className="text-gray-300 hover:text-white transition-colors relative group"
+                    >
+                      {item.name}
+                      <motion.div
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500"
+                        initial={{ scaleX: 0 }}
+                        whileHover={{ scaleX: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className="text-gray-300 hover:text-white transition-colors relative group"
+                    whileHover={{ y: -2 }}
+                  >
+                    {item.name}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500"
+                      initial={{ scaleX: 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </motion.button>
+                )
               ))}
               <motion.button
                 onClick={() => scrollToSection('#contact')}
@@ -113,17 +135,35 @@ export const Navbar = () => {
               transition={{ delay: 0.1 }}
             >
               {navItems.map((item, index) => (
-                <motion.button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-3xl font-semibold text-white hover:text-purple-400 transition-colors"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {item.name}
-                </motion.button>
+                item.isRoute ? (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      to={item.href}
+                      className="text-3xl font-semibold text-white hover:text-purple-400 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className="text-3xl font-semibold text-white hover:text-purple-400 transition-colors"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {item.name}
+                  </motion.button>
+                )
               ))}
               <motion.button
                 onClick={() => scrollToSection('#contact')}

@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -8,8 +9,9 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { SEOHead } from './components/SEOHead';
 import { Analytics } from './components/Analytics';
+import Blog from './components/Blog';
 
-export default function App() {
+function Home() {
   return (
     <>
       <SEOHead />
@@ -26,5 +28,16 @@ export default function App() {
         <Footer />
       </div>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+    </Router>
   );
 }
