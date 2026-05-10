@@ -32,6 +32,29 @@ export interface ContactFormData {
   phone?: string;
 }
 
+export interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: number;
+  category: string;
+  image?: string;
+}
+
+export interface DirectusPost {
+  id: number;
+  status: string;
+  date_created?: string;
+  Titulo?: string;
+  title?: string;
+  body?: string;
+  excerpt?: string;
+  read_time?: number;
+  category?: string;
+  imagem?: string;
+}
+
 export interface AnalyticsEvent {
   eventName: string;
   category: string;

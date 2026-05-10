@@ -1,4 +1,6 @@
-import { motion } from 'motion/react';
+"use client";
+
+import { motion } from 'framer-motion';
 import { Send, Mail, Phone, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useContactViewModel } from '../viewmodels/useContactViewModel';
@@ -11,8 +13,7 @@ export const Contact = () => {
     updateField,
     handleSubmit,
     isSubmitting,
-    submitStatus,
-    resetStatus
+    submitStatus
   } = useContactViewModel();
 
   const onSubmit = async (e: React.FormEvent) => {

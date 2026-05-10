@@ -1,4 +1,6 @@
-import { motion } from 'motion/react';
+"use client";
+
+import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { testimonials } from '../models/data';

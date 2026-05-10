@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Habilitar React Strict Mode para detecção de problemas
@@ -20,14 +20,6 @@ const nextConfig: NextConfig = {
         hostname: "www.youtube.com",
       },
     ],
-  },
-
-  // Suporte a módulos
-  swcMinify: true,
-
-  // Habilitar Suspense e streaming
-  experimental: {
-    serverComponentsExternalPackages: ["sonner"],
   },
 };
 

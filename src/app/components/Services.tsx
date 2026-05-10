@@ -1,4 +1,6 @@
-import { motion } from 'motion/react';
+"use client";
+
+import { motion } from 'framer-motion';
 import { Video, Film, Lightbulb, BookOpen, Camera, Users } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { services } from '../models/data';

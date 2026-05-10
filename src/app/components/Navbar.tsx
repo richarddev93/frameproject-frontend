@@ -1,7 +1,9 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link'
 
 const navItems = [
   { name: 'Início', href: '#hero' },
@@ -64,7 +66,7 @@ export const Navbar = () => {
                     whileHover={{ y: -2 }}
                   >
                     <Link
-                      to={item.href}
+                      href={item.href}
                       className="text-gray-300 hover:text-white transition-colors relative group"
                     >
                       {item.name}

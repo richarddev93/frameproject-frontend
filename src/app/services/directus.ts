@@ -7,11 +7,11 @@ export type DirectusCollectionResponse<T> = {
   };
 };
 
-const DIRECTUS_BASE_URL = import.meta.env.VITE_DIRECTUS_URL ?? '';
-const DIRECTUS_TOKEN = import.meta.env.VITE_DIRECTUS_TOKEN ?? '';
+const DIRECTUS_BASE_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL ?? '';
+const DIRECTUS_TOKEN = process.env.DIRECTUS_API_TOKEN ?? '';
 console.log('Directus Config:', {
-  url: import.meta.env.VITE_DIRECTUS_URL,
-  token: import.meta.env.VITE_DIRECTUS_TOKEN,
+  url: process.env.NEXT_PUBLIC_DIRECTUS_URL,
+  token: process.env.DIRECTUS_API_TOKEN,
 });
 // Log on initialization
 console.log('[Directus Init]', {
@@ -33,7 +33,6 @@ const buildDirectusUrl = (collection: string, query?: Record<string, string | nu
     });
   }
 
-  console.log('[Directus URL]', url.toString());
   return url.toString();
 };
 

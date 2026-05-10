@@ -1,4 +1,6 @@
-import { motion, AnimatePresence } from 'motion/react';
+"use client";
+
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { usePortfolioViewModel } from '../viewmodels/usePortfolioViewModel';

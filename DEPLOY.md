@@ -9,7 +9,7 @@
 - HTTPS automático
 - CDN global
 - Preview deployments
-- Otimizado para React/Vite
+- Otimizado para Next.js (criadores da plataforma)
 - 100% gratuito para projetos pessoais
 
 **Passos:**
@@ -28,13 +28,12 @@ vercel
 
 Ou conecte seu repositório GitHub diretamente no dashboard da Vercel.
 
-4. Configure as variáveis de ambiente (se necessário):
-   - `VITE_GA_MEASUREMENT_ID`: Seu ID do Google Analytics
+4. Configure as variáveis de ambiente no dashboard Vercel
 
-**Build Settings:**
-- Framework Preset: Vite
-- Build Command: `vite build`
-- Output Directory: `dist`
+**Build Settings (automático):**
+- Framework: Next.js
+- Build Command: `next build`
+- Output Directory: `.next`
 
 ---
 
@@ -48,7 +47,7 @@ Ou conecte seu repositório GitHub diretamente no dashboard da Vercel.
 
 3. Configure o build:
    - Build command: `pnpm run build`
-   - Publish directory: `dist`
+   - Publish directory: `.next`
 
 4. Deploy automático a cada push
 
@@ -56,6 +55,8 @@ Ou conecte seu repositório GitHub diretamente no dashboard da Vercel.
 - Forms integrados
 - Serverless functions
 - Split testing
+
+**Nota**: Next.js requer configuração especial no Netlify. Prefira Vercel.
 
 ---
 
@@ -78,7 +79,7 @@ firebase init hosting
 ```json
 {
   "hosting": {
-    "public": "dist",
+    "public": ".next/static",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
@@ -96,6 +97,8 @@ pnpm run build
 firebase deploy --only hosting
 ```
 
+**Nota**: Firebase é mais adequado para SPAs. Para Next.js com SSR, use Vercel.
+
 ---
 
 ### 4. GitHub Pages
@@ -112,17 +115,18 @@ pnpm add -D gh-pages
 {
   "scripts": {
     "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d out"
   }
 }
 ```
 
-3. Configure `vite.config.ts`:
+3. Configure `next.config.ts` com output estático:
 ```ts
-export default defineConfig({
-  base: '/frameproject/', // Nome do repositório
-  // ...
-})
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+}
+module.exports = nextConfig
 ```
 
 4. Deploy:
@@ -130,13 +134,15 @@ export default defineConfig({
 pnpm run deploy
 ```
 
+**Nota**: GitHub Pages só suporta sites estáticos. Use apenas se não precisar SSR.
+
 ---
 
 ## Checklist Pré-Deploy ✅
 
 ### SEO
 - [ ] Substitua `https://frameproject.com` pela URL real em:
-  - `src/app/components/SEOHead.tsx`
+  - `src/app/page.tsx`
   - `public/sitemap.xml`
   - `public/robots.txt`
 
@@ -149,10 +155,14 @@ pnpm run deploy
 - [ ] Adicione suas imagens/vídeos reais
 - [ ] Atualize informações de contato em `src/app/components/Contact.tsx`
 
+### Directus CMS
+- [ ] Configure token e URL no Render ou plataforma CMS
+- [ ] Atualize `NEXT_PUBLIC_DIRECTUS_URL` e `DIRECTUS_API_TOKEN` nos secrets do Vercel
+
 ### Performance
 - [ ] Teste performance com Lighthouse
 - [ ] Otimize imagens (use formato WebP)
-- [ ] Ative compressão gzip/brotli no host
+- [ ] Ative compressão gzip/brotli no host (automático no Vercel)
 
 ### Domínio Personalizado
 - [ ] Registre um domínio (Namecheap, GoDaddy, etc.)
@@ -163,15 +173,18 @@ pnpm run deploy
 
 ## Variáveis de Ambiente
 
-Crie arquivo `.env.local`:
+Criar no `.env.local` localmente (não commit):
 
 ```env
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
-VITE_SITE_URL=https://seusite.com
-VITE_CONTACT_EMAIL=contato@frameproject.com
+NEXT_PUBLIC_DIRECTUS_URL=https://frameproject-cms-directus.onrender.com
+DIRECTUS_API_TOKEN=YOUR_TOKEN_HERE
 ```
 
-⚠️ **Importante**: Adicione `.env.local` ao `.gitignore`
+**No Vercel**, adicione via Dashboard > Project Settings > Environment Variables:
+- `NEXT_PUBLIC_DIRECTUS_URL`
+- `DIRECTUS_API_TOKEN`
+
+⚠️ **Importante**: Adicione `.env.local` ao `.gitignore` (já configurado)
 
 ---
 
@@ -180,7 +193,7 @@ VITE_CONTACT_EMAIL=contato@frameproject.com
 Crie `.github/workflows/deploy.yml`:
 
 ```yaml
-name: Deploy
+name: Deploy to Vercel
 
 on:
   push:
@@ -226,7 +239,7 @@ jobs:
 ### Analytics
 - Google Analytics 4
 - Google Search Console
-- Hotjar (heatmaps)
+- [Vercel Analytics](https://vercel.com/analytics)
 
 ### Performance
 - [PageSpeed Insights](https://pagespeed.web.dev/)
@@ -244,25 +257,24 @@ jobs:
 ### Build falha
 ```bash
 # Limpe cache e reinstale
-rm -rf node_modules pnpm-lock.yaml
+rm -rf node_modules .next pnpm-lock.yaml
 pnpm install
 pnpm run build
 ```
 
-### Rotas 404
-Configure rewrites para SPA:
-```json
-{
-  "rewrites": [
-    { "source": "**", "destination": "/index.html" }
-  ]
-}
-```
+### Rotas 404 no Vercel
+Next.js lida automaticamente com roteamento. Se usar catch-all routes, configure em `app/[...slug]/page.tsx`
 
 ### Imagens não carregam
 - Verifique paths relativos
 - Use URLs absolutas para imagens externas
 - Configure CORS se necessário
+- Use `next/image` para otimização automática
+
+### Diretus CMS erros
+- Verifique `NEXT_PUBLIC_DIRECTUS_URL` está acessível
+- Confirme token de API válido em `DIRECTUS_API_TOKEN`
+- Valide permissões de leitura nas collections no Directus
 
 ---
 
@@ -273,6 +285,7 @@ Configure rewrites para SPA:
 | Vercel | Ilimitado | $20/mês |
 | Netlify | 100GB/mês | $19/mês |
 | Firebase | 10GB/mês | Pay-as-you-go |
+| Directus | Free | $12/mês+ |
 | Domínio | - | $10-15/ano |
 | Analytics | Gratuito | - |
 
@@ -280,7 +293,7 @@ Configure rewrites para SPA:
 
 ## Próximos Passos
 
-1. ✅ Deploy inicial
+1. ✅ Deploy inicial no Vercel
 2. 📊 Configure Analytics
 3. 🔍 Submeta ao Google Search Console
 4. 🎯 Configure campanhas de mídia
@@ -292,6 +305,6 @@ Configure rewrites para SPA:
 **Boa sorte com o deploy! 🚀**
 
 Se encontrar problemas, consulte a documentação oficial:
-- [Vite Deploy Guide](https://vitejs.dev/guide/static-deploy.html)
+- [Next.js Deployment](https://nextjs.org/docs/deployment)
 - [Vercel Docs](https://vercel.com/docs)
 - [Netlify Docs](https://docs.netlify.com/)
