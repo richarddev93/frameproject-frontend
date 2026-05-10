@@ -146,7 +146,7 @@ export const Navbar = () => {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
-                      to={item.href}
+                      href={item.href}
                       className="text-3xl font-semibold text-white hover:text-purple-400 transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
