@@ -1,29 +1,33 @@
-import type { CmsClient } from './cms';
+import type { CmsClient } from "./cms";
 
-export type DirectusCollectionResponse<T> = {
+const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL ?? "";
+
+const DIRECTUS_TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_API_TOKEN ?? "";
+
+type QueryParams = Record<string, string | number | boolean>;
+
+type FetchOptions = {
+  query?: QueryParams;
+
+  revalidate?: number;
+
+  tags?: string[];
+};
+
+type DirectusResponse<T> = {
+  data: T;
+};
+
+type DirectusCollectionResponse<T> = {
   data: T[];
+
   meta?: {
     total_count?: number;
   };
 };
 
-const DIRECTUS_BASE_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL ?? '';
-const DIRECTUS_TOKEN = process.env.DIRECTUS_API_TOKEN ?? '';
-console.log('Directus Config:', {
-  url: process.env.NEXT_PUBLIC_DIRECTUS_URL,
-  token: process.env.DIRECTUS_API_TOKEN,
-});
-// Log on initialization
-console.log('[Directus Init]', {
-  url: DIRECTUS_BASE_URL,
-  tokenExists: !!DIRECTUS_TOKEN,
-  tokenLength: DIRECTUS_TOKEN?.length,
-});
-  console.log(DIRECTUS_TOKEN)
-
-const buildDirectusUrl = (collection: string, query?: Record<string, string | number | boolean>) => {
-  const baseUrl = `${DIRECTUS_BASE_URL}/items/${collection}`;
-  const url = new URL(baseUrl);
+function buildUrl(path: string, query?: QueryParams) {
+  const url = new URL(`${DIRECTUS_URL}${path}`);
 
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
@@ -34,68 +38,88 @@ const buildDirectusUrl = (collection: string, query?: Record<string, string | nu
   }
 
   return url.toString();
-};
-
-const directusFetch = async <T>(collection: string, query?: Record<string, string | number | boolean>) => {
-  const url = buildDirectusUrl(collection, query);
-
-  console.debug('[Directus] Fetching:', {
-    url,
-    collection,
-    query,
-    hasToken: !!DIRECTUS_TOKEN,
-  });
-
-  const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(DIRECTUS_TOKEN ? { Authorization: `Bearer ${DIRECTUS_TOKEN}` } : {}),
-    },
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    console.error('[Directus] Request failed:', {
-      status: response.status,
-      statusText: response.statusText,
-      responseText: text,
-    });
-    throw new Error(`Directus request failed (${response.status}): ${text}`);
-  }
-
-  const data = (await response.json()) as DirectusCollectionResponse<T>;
-  console.debug('[Directus] Request successful:', { itemCount: data.data?.length });
-  return data;
-};
-
-export async function getDirectusCollection<T>(collection: string, query?: Record<string, string | number | boolean>) {
-  return directusFetch<T>(collection, query);
 }
 
-export async function getDirectusItem<T>(collection: string, id: string | number, query?: Record<string, string | number | boolean>) {
-  const url = new URL(`${DIRECTUS_BASE_URL}/items/${collection}/${id}`);
+async function directusFetch<T>(
+  path: string,
+  options?: FetchOptions,
+): Promise<T> {
+  const url = buildUrl(path, options?.query);
 
-  if (query) {
-    Object.entries(query).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        url.searchParams.set(key, String(value));
-      }
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+
+        ...(DIRECTUS_TOKEN && {
+          Authorization: `Bearer ${DIRECTUS_TOKEN}`,
+        }),
+      },
+
+      next: {
+        revalidate: options?.revalidate,
+
+        tags: options?.tags,
+      },
     });
+
+    if (!response.ok) {
+      const text = await response.text();
+
+      throw new Error(`Directus Error (${response.status}): ${text}`);
+    }
+
+    const json = (await response.json()) as DirectusResponse<T>;
+
+    return json.data;
+  } catch (error) {
+    console.error("[DIRECTUS_FETCH_ERROR]", error);
+
+    throw error;
   }
+}
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(DIRECTUS_TOKEN ? { Authorization: `Bearer ${DIRECTUS_TOKEN}` } : {}),
-    },
-  });
+export async function getDirectusCollection<T>(
+  collection: string,
+  options?: FetchOptions,
+): Promise<DirectusCollectionResponse<T>> {
+  const url = buildUrl(`/items/${collection}`, options?.query);
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Directus request failed (${response.status}): ${text}`);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+
+        ...(DIRECTUS_TOKEN && {
+          Authorization: `Bearer ${DIRECTUS_TOKEN}`,
+        }),
+      },
+
+      next: {
+        revalidate: options?.revalidate,
+
+        tags: options?.tags,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed collection fetch`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("[DIRECTUS_COLLECTION_ERROR]", error);
+
+    throw error;
   }
+}
 
-  return (await response.json()) as { data: T };
+export async function getDirectusItem<T>(
+  collection: string,
+  id: string | number,
+  options?: FetchOptions,
+): Promise<T> {
+  return directusFetch<T>(`/items/${collection}/${id}`, options);
 }
 
 export const directusClient: CmsClient = {
