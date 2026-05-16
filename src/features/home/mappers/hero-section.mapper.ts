@@ -1,7 +1,11 @@
 export function heroSectionMapper(data: any) {
   console.log("HeroSectionMapper data:", data);
 
-   return data.data.map((item: any) => {
+  if (!data || !data.data || !Array.isArray(data.data)) {
+    return [];
+  }
+
+  return data.data.map((item: any) => {
     console.log("Mapping item:", item);
     return {
       id: item.id,

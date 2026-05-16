@@ -1,12 +1,5 @@
-import { getHomeHeroSection } from "../services/get-hero-section-home";
-import { heroSectionMapper } from "../mappers/hero-section.mapper";
-
-export async function useHeroSectionViewModel() {
-  const response = await getHomeHeroSection();
-
-  const mapped = heroSectionMapper(response);
-
+export function heroViewModel(data: any[]) {
   return {
-    ...mapped[0],
+    ...data[0],
   };
 }
