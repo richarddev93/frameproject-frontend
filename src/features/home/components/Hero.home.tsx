@@ -4,27 +4,30 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { getCloudinaryImageUrl } from "@/services/cloudinary";
 
-export const Hero = ({data}:{data:any}) => {
+export const Hero = ({ data }: { data: any }) => {
   const bannerUrl = getCloudinaryImageUrl(data.banner, {
     width: 1920,
     height: 1080,
     quality: 90,
   });
 
+  const handleCTAClick = () => {
+    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      {bannerUrl && (
-        <div className="absolute inset-0">
+      {bannerUrl ? (
+        <motion.div className="absolute inset-0">
           <img
             src={bannerUrl}
             alt={data.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/80 to-blue-900/70" />
-        </div>
-      )}
-      {!bannerUrl && (
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+          <motion.div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/80 to-blue-900/70" />
+        </motion.div>
+      ) : (
+        <motion.div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
       )}
 
       <motion.div
@@ -40,16 +43,16 @@ export const Hero = ({data}:{data:any}) => {
           ease: "linear",
         }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]" />
+        <motion.div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]" />
       </motion.div>
 
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+      <motion.div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
             {data.title}
           </h1>
         </motion.div>
@@ -64,7 +67,7 @@ export const Hero = ({data}:{data:any}) => {
         </motion.p>
 
         <motion.button
-          onClick={data.handleCTAClick}
+          onClick={handleCTAClick}
           className="group relative px-8 py-4 bg-white text-black rounded-full font-semibold text-lg hover:bg-purple-500 hover:text-white transition-all duration-300 overflow-hidden"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -73,7 +76,7 @@ export const Hero = ({data}:{data:any}) => {
           whileTap={{ scale: 0.95 }}
         >
           <span className="relative z-10 flex items-center gap-2">
-            {data.subtitle}
+            {data.subtitle || "Vamos conversar"}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
           <motion.div
@@ -85,7 +88,7 @@ export const Hero = ({data}:{data:any}) => {
         </motion.button>
 
         <motion.div
-          className="absolute bottom-10 right-10"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, y: [0, 10, 0] }}
           transition={{
@@ -93,15 +96,15 @@ export const Hero = ({data}:{data:any}) => {
             y: { duration: 2, repeat: Infinity },
           }}
         >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+          <motion.div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
             <motion.div
               className="w-1.5 h-3 bg-white/50 rounded-full"
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
-          </div>
+          </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };

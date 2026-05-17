@@ -1,62 +1,115 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { 
-  Video, 
-  Film, 
-  Lightbulb, 
-  BookOpen, 
-  Camera, 
-  Users 
-} from "lucide-react";
-
-const iconMap: Record<string, any> = {
+import {
   Video,
   Film,
   Lightbulb,
   BookOpen,
   Camera,
   Users,
+  Sparkles,
+  Award,
+} from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+const iconMap: Record<string, typeof Video> = {
+  Video,
+  Film,
+  Lightbulb,
+  BookOpen,
+  Camera,
+  Users,
+  Sparkles,
+  Award,
 };
 
 export const Services = ({ data }: { data: any[] }) => {
+  const { ref } = useScrollAnimation(0.2);
+
+  if (!data.length) {
+    return null;
+  }
+
   return (
-    <section className="py-20 px-4 bg-background">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+    <section ref={ref} id="services" className="py-32 px-4 bg-black">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-bold mb-12 text-center bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
+          className="text-center mb-20"
         >
-          Nossos Serviços
-        </motion.h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+            Serviços
+          </h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Soluções completas de produção audiovisual para o seu projeto
+          </p>
+        </motion.div>
+
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.map((service, index) => {
             const Icon = iconMap[service.icon] || Lightbulb;
+
             return (
               <motion.div
                 key={service.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="p-6 rounded-lg bg-card border border-border hover:border-purple-500 transition-colors"
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group relative p-8 rounded-2xl bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/5 hover:border-purple-500/30 transition-all duration-300"
+                whileHover={{ y: -8 }}
               >
-                <div className="w-12 h-12 mb-4 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-purple-400" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                <div className="relative z-10">
+                  <motion.div
+                    className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center"
+                    whileHover={{ rotate: 5, scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <Icon className="w-8 h-8 text-white" />
+                  </motion.div>
+
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-gray-400 leading-relaxed">
+                    {service.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-foreground">
-                  {service.title}
-                </h3>
-                <p className="text-gray-400">
-                  {service.description}
-                </p>
+
+                <div className="absolute -bottom-2 -right-2 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center mt-16"
+        >
+          <p className="text-gray-400 text-lg mb-8">
+            Não encontrou o que procura? Vamos conversar sobre o seu projeto
+          </p>
+          <motion.button
+            onClick={() => {
+              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Solicitar orçamento
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );
