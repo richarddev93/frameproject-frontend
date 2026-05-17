@@ -92,9 +92,10 @@ export default function Blog() {
                   {post.title}
                 </h2>
 
-                <p className="text-gray-300 leading-relaxed line-clamp-3">
-                  {post.excerpt}
-                </p>
+                <div 
+                  className="text-gray-300 leading-relaxed line-clamp-3 prose prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{ __html: post.excerpt }}
+                />
 
                 <div className="mt-4">
                   <span className="text-purple-400 font-medium group-hover:text-purple-300 transition-colors">

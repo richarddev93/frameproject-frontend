@@ -2,16 +2,30 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { getHomeHeroSection } from "../services/get-hero-section-home";
-import { heroSectionMapper } from "../mappers/hero-section.mapper";
-import { heroViewModel } from "../viewmodels/hero-section.viewmodel";
+import { getCloudinaryImageUrl } from "@/services/cloudinary";
 
-export const Hero = async ({data}:{data:any}) => {
-
+export const Hero = ({data}:{data:any}) => {
+  const bannerUrl = getCloudinaryImageUrl(data.banner, {
+    width: 1920,
+    height: 1080,
+    quality: 90,
+  });
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+      {bannerUrl && (
+        <div className="absolute inset-0">
+          <img
+            src={bannerUrl}
+            alt={data.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/80 to-blue-900/70" />
+        </div>
+      )}
+      {!bannerUrl && (
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+      )}
 
       <motion.div
         className="absolute inset-0 opacity-30"
@@ -35,7 +49,7 @@ export const Hero = async ({data}:{data:any}) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
             {data.title}
           </h1>
         </motion.div>
@@ -46,7 +60,7 @@ export const Hero = async ({data}:{data:any}) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Transformando histórias em experiências visuais inesquecíveis
+          {data.description || "Transformando histórias em experiências visuais inesquecíveis"}
         </motion.p>
 
         <motion.button
@@ -71,7 +85,7 @@ export const Hero = async ({data}:{data:any}) => {
         </motion.button>
 
         <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-10 right-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, y: [0, 10, 0] }}
           transition={{

@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { getCloudinaryImageUrl } from "@/services/cloudinary";
 
 export const About = ({ data }: { data: any }) => {
+  const imageUrl = getCloudinaryImageUrl(data.image, {
+    width: 800,
+    height: 600,
+    quality: 90,
+  });
+
+  console.log("About component data:", data);
+
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
@@ -17,11 +26,12 @@ export const About = ({ data }: { data: any }) => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               Sobre Nós
             </h2>
-            <p className="text-lg text-gray-300 leading-relaxed">
-              {data.description}
-            </p>
+            <div 
+              className="text-lg text-gray-300 leading-relaxed prose prose-invert max-w-none"
+              dangerouslySetInnerHTML={{ __html: data.description || "Descrição não disponível" }}
+            />
           </div>
-          {data.image && (
+          {imageUrl && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -30,7 +40,7 @@ export const About = ({ data }: { data: any }) => {
               className="relative"
             >
               <img
-                src={data.image}
+                src={imageUrl}
                 alt="About"
                 className="rounded-lg shadow-2xl"
               />
