@@ -46,13 +46,13 @@ export const Hero = ({ data }: { data: any }) => {
         <motion.div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]" />
       </motion.div>
 
-      <motion.div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+      <motion.div className="relative z-10 text-center p-4 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-6xl md:text-8xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
             {data.title}
           </h1>
         </motion.div>
