@@ -82,7 +82,7 @@ export default async function Home() {
 
       <Contact data={contactVm} />
 
-      <Footer data={footerVm} />
+      <Footer data={footerVm} contact={contactVm} />
     </>
   );
 }

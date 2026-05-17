@@ -8,9 +8,11 @@ export type Contact = {
   instagram?: string;
   facebook?: string;
   email?: string;
+  phone?: string;
   linkedin?: string;
   x?: string;
   attendance_time_week?: string;
   attendance_time_weekend?: string;
+  attendance_time_sunday?: string;
   address?: string;
 };
