@@ -46,3 +46,169 @@ body {
     scrollbar-color: #27272a #000000;
   }
 }
+
+/* ==========================================================================
+   Modern Navigation Bar Styles (Scroll-Driven Animations & Anchor Positioning)
+   ========================================================================== */
+
+/* Register custom properties at top-level for animations */
+@property --drawer-backdrop {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+/* 1. Scroll-Driven Navbar Animation */
+@keyframes scroll-nav {
+  to {
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    padding-top: 0.75rem; /* py-3 */
+    padding-bottom: 0.75rem; /* py-3 */
+  }
+}
+
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  .animate-nav-scroll {
+    animation: scroll-nav auto linear both;
+    animation-timeline: scroll(block root);
+    animation-range: 0px 80px;
+  }
+}
+
+/* 2. Anchor Positioning Active Underline */
+.nav-list {
+  position: relative;
+}
+
+/* Create the underline using a pseudo-element on the ul container */
+.nav-list::before {
+  content: '';
+  position: absolute;
+  position-anchor: --active-tab;
+  inset-block-start: calc(anchor(bottom) + 6px);
+  inset-inline-start: anchor(left);
+  inset-inline-end: anchor(right);
+  height: 2px;
+  background: linear-gradient(90deg, #a855f7, #3b82f6); /* from-purple-500 to-blue-500 */
+  border-radius: 9999px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-list::before {
+    transition: inset 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+.nav-item-active {
+  anchor-name: --active-tab;
+  color: #ffffff !important;
+}
+
+/* Fallback when anchor positioning is not supported */
+@supports not (position-anchor: auto) {
+  .nav-list::before {
+    display: none; /* Hide the pseudo-element underline */
+  }
+  .nav-item-active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #a855f7, #3b82f6);
+    border-radius: 9999px;
+  }
+}
+
+/* 3. Navigation Drawer (Mobile) */
+.Drawer {
+  --drawer-width: min(20rem, 80dvw);
+
+  width: auto;
+  height: auto;
+  background: transparent;
+  border: 0;
+  overflow: visible;
+  padding: 0;
+  margin: 0;
+}
+
+.Drawer::backdrop {
+  background: #000000;
+  opacity: calc(var(--drawer-backdrop) / 1.3); /* cap the opacity so it doesn't go pitch black */
+  transition: opacity 0.15s ease;
+}
+
+.Drawer-scroller {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--drawer-width) 100%;
+  overflow-x: scroll;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.Drawer-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Drawer-scroller {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Spacer for closed position */
+.Drawer-scroller::after {
+  content: '';
+  scroll-snap-align: end;
+  scroll-initial-target: nearest;
+}
+
+.Drawer-sheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  height: 100svh;
+  background: rgba(10, 10, 10, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  overflow-y: auto;
+  scroll-snap-align: start;
+  scrollbar-width: none;
+  outline: none;
+}
+
+.Drawer-sheet::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tie backdrop opacity to horizontal scroll position of scroller */
+@supports (animation-timeline: scroll()) {
+  .Drawer {
+    timeline-scope: --drawer-fade;
+    animation: fade-drawer-backdrop linear both;
+    animation-timeline: --drawer-fade;
+  }
+
+  .Drawer-scroller {
+    scroll-timeline: --drawer-fade x;
+  }
+
+  @keyframes fade-drawer-backdrop {
+    0% { --drawer-backdrop: 1; }
+    100% { --drawer-backdrop: 0; }
+  }
+}
+

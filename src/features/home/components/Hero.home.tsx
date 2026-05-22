@@ -16,7 +16,7 @@ export const Hero = ({ data }: { data: any }) => {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
       {bannerUrl ? (
         <motion.div className="absolute inset-0">
           <img
