@@ -212,3 +212,38 @@ body {
   }
 }
 
+/* 4. Parallax Scroll Animations for Hero Section */
+@keyframes parallax-bg {
+  to {
+    transform: scale(1.15) translateY(8%);
+  }
+}
+
+@keyframes parallax-content {
+  to {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+@supports ((animation-timeline: view()) and (animation-range: entry)) {
+  .hero-section {
+    view-timeline: --hero-view block;
+  }
+
+  .hero-bg-layer {
+    animation: parallax-bg linear both;
+    animation-timeline: --hero-view;
+    animation-range: exit 0% exit 100%;
+    transform: scale(1.15); /* Keep it slightly scaled initially for safety padding */
+    transform-origin: center top;
+  }
+
+  .hero-content-layer {
+    animation: parallax-content linear both;
+    animation-timeline: --hero-view;
+    animation-range: exit 0% exit 100%;
+  }
+}
+
+

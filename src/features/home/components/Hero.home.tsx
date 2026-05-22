@@ -16,43 +16,46 @@ export const Hero = ({ data }: { data: any }) => {
   };
 
   return (
-    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      {bannerUrl ? (
-        <motion.div className="absolute inset-0">
-          <img
-            src={bannerUrl}
-            alt={data.title}
-            className="w-full h-full object-cover"
-          />
-          <motion.div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/80 to-blue-900/70" />
+    <section id="hero" className="hero-section relative h-screen flex items-center justify-center overflow-hidden bg-black">
+      <div className="hero-bg-layer absolute inset-0">
+        {bannerUrl ? (
+          <div className="absolute inset-0">
+            <img
+              src={bannerUrl}
+              alt={data.title}
+              className="w-full h-full object-cover"
+              {...({ fetchPriority: 'high' } as any)}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-black/80 to-blue-900/70" />
+          </div>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+        )}
+
+        <motion.div
+          className="absolute inset-0 opacity-30"
+          initial={{ scale: 1.2 }}
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.3, 0.2, 0.3],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]" />
         </motion.div>
-      ) : (
-        <motion.div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
-      )}
+      </div>
 
-      <motion.div
-        className="absolute inset-0 opacity-30"
-        initial={{ scale: 1.2 }}
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.3, 0.2, 0.3],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      >
-        <motion.div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent_50%)]" />
-      </motion.div>
-
-      <motion.div className="relative z-10 text-center p-4 max-w-5xl mx-auto">
+      <motion.div className="hero-content-layer relative z-10 text-center p-4 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h1 className="text-6xl md:text-8xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-6xl md:text-8xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.25)]">
             {data.title}
           </h1>
         </motion.div>
